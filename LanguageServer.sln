@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.62
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonRpcServer", "JsonRpcServer\JsonRpcServer.csproj", "{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5C882052-B698-46E5-8EE8-4DE4694D3C1A}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,4 @@
+packages/*
+JsonRpcServer/bin/*
+JsonRpcServer/obj/*
+.vs/*
