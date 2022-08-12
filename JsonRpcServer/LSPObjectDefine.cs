@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace JsonRpcServer
 {
+    /* --- LSP仕様書で定義されているJSONフォーマット定義 --- */
+
+    /* --- データ型 --- */
     public class TextDocumentItem_LSP
     {
         public string uri;
@@ -14,11 +17,39 @@ namespace JsonRpcServer
         public string text;
     }
 
-    public sealed class PublishDiagnosticsClientCapabilities_LSP
+    public sealed class Range
     {
-        public bool relatedInformation;
+        public Range(int startLine, int startChar, int endLine, int endChar)
+        {
+            this.start.line = startLine;
+            this.start.character = startChar;
 
+            this.end.line = endLine;
+            this.end.character = endChar;
+        }
+        
+        public struct Position
+        {
+            public int line;
+            public int character;
+        }
+        public Position start;
+        public Position end;
+}
+
+    public sealed class Diagnostic_LSP
+    {
+        public Range range;
+        public string message;
+        public DiagnosticSeverity severity;
     }
+
+    internal class PublishDiagnosticsParams_LSP
+    {
+        public string uri;
+        public List<Diagnostic_LSP> diagnostics;
+    }
+
 
     public sealed class WorkspaceClientCapabilities
     {
@@ -258,7 +289,37 @@ namespace JsonRpcServer
 
     }
 
+    public sealed class TextDocumentSyncOptions
+    {
+        public bool openClose;
+        public TextDocumentSyncKind change;
+    }
 
+    public sealed class ServerCpabilities
+    {
+        public TextDocumentSyncOptions textDocumentSync;
+
+    }
+
+    public sealed class ServerCapabilities_LSP
+    {
+        public ServerCpabilities capabilities;
+    }
+
+    public sealed class LogMessageParams_LSP
+    {
+        public MessageType type;
+        public string message;
+    }
+
+    /* --- enum --- */
+    public enum DiagnosticSeverity
+    {
+        Error = 1,
+        Warning = 2,
+        Information = 3,
+        Hint = 4,
+    }
 
     public enum SymbolKind
     {
@@ -291,4 +352,18 @@ namespace JsonRpcServer
         TypeParameter = 26
     }
 
+    public enum TextDocumentSyncKind
+    {
+        None = 0,
+        Full = 1,
+        Incremental = 2
+    }
+
+    public enum MessageType
+    {
+        Error = 1,
+        Warning = 2,
+        Info = 3,
+        Log = 4
+    }
 }

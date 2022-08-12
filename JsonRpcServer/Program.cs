@@ -13,7 +13,6 @@ namespace JsonRpcServer
     {
         static async Task<int> Main(string[] args)
         {
-            Trace.WriteLine("Hello Trace!");
             if (args.Length > 0 && args[0] == "stdio")
             {
                 await RespondToRpcRequestsAsync(FullDuplexStream.Splice(Console.OpenStandardInput(), Console.OpenStandardOutput()), 0);
@@ -23,7 +22,6 @@ namespace JsonRpcServer
                 await NamedPipeServerAsync();
             }
 
-            Trace.WriteLine("Good Bye Trace!");
             return 0;
         }
         private static async Task NamedPipeServerAsync()
