@@ -27,14 +27,14 @@ namespace JsonRpcServer
             sendMessage("window/logMessage", LogMessageParams);
         }
 
-        private void sendDiagnostics(string uri)
+        private void sendDiagnostics(string uri, List<Diagnostic_LSP>lstDiagnositcs)
         {
             if (_bIsPubDiagnostics)
             {
                 var DiagnosticJson = new PublishDiagnosticsParams_LSP
                 {
                     uri = uri,
-                    diagnostics = new List<Diagnostic_LSP>(_lstDiagnostics)
+                    diagnostics = new List<Diagnostic_LSP>(lstDiagnositcs)
                 };
 
                 sendMessage("textDocument/publishDiagnostics", DiagnosticJson);
@@ -70,7 +70,7 @@ namespace JsonRpcServer
             _lstDiagnostics.Add(diagnosticLSP[1]);
             _lstDiagnostics.Add(diagnosticLSP[2]);
 
-            sendDiagnostics(uri); 
+            sendDiagnostics(uri, _lstDiagnostics); 
         }
 
         [JsonRpcMethod("initialize")]
@@ -101,7 +101,14 @@ namespace JsonRpcServer
         [JsonRpcMethod("textDocument/didChange")]
         public void TextDocDidChange(object textDocument, object contentChanges)
         {
-            Console.Error.WriteLine($"DidChange.");
+
+        }
+
+        [JsonRpcMethod("textDocument/didClose")]
+        public void TextDocDidClose(TextDocumentItem_LSP textDocument)
+        {
+            _lstDiagnostics.Clear();
+            sendDiagnostics(textDocument.uri, _lstDiagnostics);
 
         }
 
