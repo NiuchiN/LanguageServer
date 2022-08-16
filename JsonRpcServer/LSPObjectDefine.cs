@@ -44,12 +44,13 @@ namespace JsonRpcServer
         public DiagnosticSeverity severity;
     }
 
-    internal class PublishDiagnosticsParams_LSP
+    public sealed class PublishDiagnosticsParams_LSP
     {
         public string uri;
         public List<Diagnostic_LSP> diagnostics;
     }
 
+ 
 
     public sealed class WorkspaceClientCapabilities
     {
@@ -280,8 +281,18 @@ namespace JsonRpcServer
 
         public sealed class PublishDiagnosticsClientCapabilities { public bool relatedInformation; }
         public PublishDiagnosticsClientCapabilities publishDiagnostics;
+
+        public sealed class SemanticTokensClientCapabilities
+        {
+            public string[] tokenTypes;
+            public string[] tokenModifiers;
+
+        }
+        public SemanticTokensClientCapabilities semanticTokens;
+
+
     }
-    
+
     public sealed class ClientCapabilities_LSP
     {
         public WorkspaceClientCapabilities workspace;
@@ -295,21 +306,43 @@ namespace JsonRpcServer
         public TextDocumentSyncKind change;
     }
 
-    public sealed class ServerCpabilities
+    public sealed class SemanticTokensOptions
+    {
+        public sealed class SemanticTokensLegend
+        {
+            public string[] tokenTypes;
+            public string[] tokenModifiers;
+        }
+        public SemanticTokensLegend legend;
+        public bool range;
+        public bool full;
+    }
+
+    public sealed class ServerCapabilities
     {
         public TextDocumentSyncOptions textDocumentSync;
-
+        public SemanticTokensOptions semanticTokensProvider;
     }
 
     public sealed class ServerCapabilities_LSP
     {
-        public ServerCpabilities capabilities;
+        public ServerCapabilities capabilities;
     }
 
     public sealed class LogMessageParams_LSP
     {
         public MessageType type;
         public string message;
+    }
+
+    public sealed class TextDocumentIdentifier_LSP
+    {
+        public string uri;
+    }
+
+    public sealed class SemanticTokens_LSP
+    {
+        public List<int> data;
     }
 
     /* --- enum --- */

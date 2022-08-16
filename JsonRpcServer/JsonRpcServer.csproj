@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LSPObjectDefine.cs" />
+    <Compile Include="Others.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Server.cs" />
   </ItemGroup>

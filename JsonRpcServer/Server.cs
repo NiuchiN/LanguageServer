@@ -5,15 +5,33 @@ using StreamJsonRpc;
 
 namespace JsonRpcServer
 {
+
+
     public class Server
     {
         private readonly JsonRpc _rpc;
         private bool _bIsPubDiagnostics = false;
         private List<Diagnostic_LSP> _lstDiagnostics = new List<Diagnostic_LSP>();
+        private Dictionary<string, int> _dicSemTokensTypes = new Dictionary<string, int>();
+        private Dictionary<string, int> _dicSemTokensModifiers = new Dictionary<string, int>();
+        private Dictionary<string, Lexer> _dicLexer = new Dictionary<string, Lexer>();
+        private bool[] _bIsTokenTypes = new bool[(int)SemTokensTypeIdx.MaxNum];
+        private bool[] _bIsTokenModifiers = new bool[(int)SemTokensModifyIdx.MaxNum];
 
         public Server(JsonRpc rpc)
         {
             _rpc = rpc;
+
+            // SemanticToken用のディクショナリを初期化
+            foreach (SemTokensTypeIdx eTypesVal in Enum.GetValues(typeof(SemTokensTypeIdx))) {
+                if (eTypesVal == SemTokensTypeIdx.MaxNum) break;
+                _dicSemTokensTypes.Add(eTypesVal.GetStr(), (int)eTypesVal);
+            }
+            foreach (SemTokensModifyIdx eModifyVal in Enum.GetValues(typeof(SemTokensModifyIdx))) {
+                if (eModifyVal == SemTokensModifyIdx.MaxNum) break;
+                _dicSemTokensModifiers.Add(eModifyVal.GetStr(), (int)eModifyVal);
+            }
+
         }
 
         private void sendMessage(string strMethod, object objParams)
@@ -42,60 +60,76 @@ namespace JsonRpcServer
 
         }
 
-        private void compile(string uri)
+        private void compile(string uri, string source)
         {
-            Diagnostic_LSP[] diagnosticLSP = new Diagnostic_LSP[3];
-
-            diagnosticLSP[0] = new Diagnostic_LSP
-            {
-                message = "test NG1",
-                range = new Range(0, 1, 0, 3),
-                severity = DiagnosticSeverity.Error
-            };
-
-            diagnosticLSP[1] = new Diagnostic_LSP
-            {
-                message = "test NG2",
-                range = new Range(0, 4, 0, 5),
-                severity = DiagnosticSeverity.Error
-            };
-
-            diagnosticLSP[2] = new Diagnostic_LSP
-            {
-                message = "test NG3",
-                range = new Range(1, 0, 1, 5),
-                severity = DiagnosticSeverity.Error
-            };
-            _lstDiagnostics.Add(diagnosticLSP[0]);
-            _lstDiagnostics.Add(diagnosticLSP[1]);
-            _lstDiagnostics.Add(diagnosticLSP[2]);
-
-            sendDiagnostics(uri, _lstDiagnostics); 
+            Lexer lex = new Lexer(uri, source);
+            lex.Tokenize();
+            _dicLexer.Add(uri, lex);
         }
 
         [JsonRpcMethod("initialize")]
         public object initialize(int processId, object clientInfo, string locale, string rootPath, string rootUri, ClientCapabilities_LSP capabilities, object trace, object workspaceFolders)
         {
+            // ClientがPublishDiagnosticsに対応しているか
             if (capabilities.textDocument.publishDiagnostics != null) {
                 _bIsPubDiagnostics = capabilities.textDocument.publishDiagnostics.relatedInformation;
             }
 
-            sendLogMessage(MessageType.Info, "Initialized!");
-
-            var initializedResult = new ServerCapabilities_LSP
-            {
-                capabilities = new ServerCpabilities
-                    {
-                        textDocumentSync = new TextDocumentSyncOptions { openClose = true, change = TextDocumentSyncKind.Full }
+            // Clientが対応しているSemanticTokens
+            if (capabilities.textDocument.semanticTokens != null) {
+                foreach (string strVal in capabilities.textDocument.semanticTokens.tokenTypes) {
+                    if (_dicSemTokensTypes.ContainsKey(strVal)) {
+                        _bIsTokenTypes[_dicSemTokensTypes[strVal]] = true;
                     }
+                }
+
+                foreach (string strVal in capabilities.textDocument.semanticTokens.tokenModifiers) {
+                    _bIsTokenModifiers[_dicSemTokensModifiers[strVal]] = true;
+                }
+            }
+            // Serverが対応しているSemanticTokensの設定
+            string[] astrTokenTypes = new string[(int)SemTokensTypeIdx.MaxNum];
+            foreach (SemTokensTypeIdx eTypesVal in Enum.GetValues(typeof(SemTokensTypeIdx))) {
+                if (eTypesVal == SemTokensTypeIdx.MaxNum) break;
+                astrTokenTypes[(int)eTypesVal] = eTypesVal.GetStr();
+            }
+
+            string[] astrTokenModify = new string[(int)SemTokensModifyIdx.MaxNum];
+            foreach (SemTokensModifyIdx eModifyVal in Enum.GetValues(typeof(SemTokensModifyIdx))) {
+                if (eModifyVal == SemTokensModifyIdx.MaxNum) break;
+                astrTokenModify[(int)eModifyVal] = eModifyVal.GetStr();
+            }
+
+            // Resultの作成
+            var initResult = new ServerCapabilities_LSP
+            {
+                capabilities = new ServerCapabilities
+                {
+                    textDocumentSync = new TextDocumentSyncOptions
+                    {
+                        openClose = true,
+                        change = TextDocumentSyncKind.Full
+                    },
+                    semanticTokensProvider = new SemanticTokensOptions
+                    {
+                        legend = new SemanticTokensOptions.SemanticTokensLegend
+                        {
+                            tokenTypes = astrTokenTypes,
+                            tokenModifiers = astrTokenModify
+                        },
+                        range = false,
+                        full = true
+                    }
+                }
             };
-            return initializedResult;
+            sendLogMessage(MessageType.Info, "Initialized!");
+            return initResult;
         }
 
         [JsonRpcMethod("textDocument/didOpen")]
         public void TextDocDidOpen(TextDocumentItem_LSP textDocument)
         {
-            compile(textDocument.uri);
+            compile(textDocument.uri, textDocument.text);
         }
 
         [JsonRpcMethod("textDocument/didChange")]
@@ -112,5 +146,19 @@ namespace JsonRpcServer
 
         }
 
+        [JsonRpcMethod("textDocument/semanticTokens/full")]
+        public object SemnticTokensFull(TextDocumentIdentifier_LSP textDocument)
+        {
+            var result = new SemanticTokens_LSP
+            {
+                data = new List<int>()
+            };
+            _dicLexer[textDocument.uri].MakeResult(result.data);
+
+            return result;
+        }
+
+
     }
 }
+    
