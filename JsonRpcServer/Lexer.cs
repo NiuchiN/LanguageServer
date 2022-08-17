@@ -6,13 +6,34 @@ using System.Threading.Tasks;
 
 namespace JsonRpcServer
 {
-    public class Token
+    public class Token : IComparable<Token>
     {
         public int Line { get; set; }
         public int StartChar { get; set; }
         public int TokenType { get; set; }
         public int TokenModifiers { get; set; }
         public string TokenString { get; set; }
+
+        public int CompareTo(Token t2)
+        {
+            if (this.Line < t2.Line) {
+                return -1;
+            }
+            else if (this.Line > t2.Line) {
+                return 1;
+            }
+            else {
+                if (this.StartChar < t2.StartChar) {
+                    return -1;
+                }
+                else if (this.StartChar > t2.StartChar) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            }
+        }
     }
 
     public class Lexer
@@ -134,7 +155,7 @@ namespace JsonRpcServer
         private Token readComment()
         {
             char curChar;
-            int startPos = _curInputPos;
+            int startPos = _curInputPos - 1;
             Token retToken = new Token();
 
             setCommonTokenInfo(retToken);
@@ -149,7 +170,6 @@ namespace JsonRpcServer
             coutUpLine();
 
             retToken.TokenString = _input.Substring(startPos, (_curInputPos - startPos));
-
             return retToken;
         }
 
@@ -395,6 +415,22 @@ namespace JsonRpcServer
                 foreach (int res in aiResultOne) {
                     lstResult.Add(res);
                 }
+            }
+        }
+
+        public Token SearchToken(int line, int startChar)
+        {
+            Token token = new Token();
+            token.Line = line;
+            token.StartChar = startChar;
+
+            var index = _lstToken.BinarySearch(token);
+
+            if (index >= 0) {
+                return _lstToken[index];
+            } else {
+                index = ~index;
+                return _lstToken[index - 1];
             }
         }
     }
