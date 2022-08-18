@@ -139,9 +139,10 @@ namespace JsonRpcServer
         }
 
         [JsonRpcMethod("textDocument/didChange")]
-        public void TextDocDidChange(object textDocument, object contentChanges)
+        public void TextDocDidChange(VersionedTextDocumentIdentifier_LSP textDocument, TextDocumentContentChangeEvent_LSP[] contentChanges)
         {
-
+            _dicLexer[textDocument.uri].InitToken(contentChanges[0].text);
+            _dicLexer[textDocument.uri].Tokenize(_instHashList);
         }
 
         [JsonRpcMethod("textDocument/didClose")]

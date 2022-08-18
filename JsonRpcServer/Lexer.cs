@@ -386,6 +386,15 @@ namespace JsonRpcServer
             }
         }
 
+        public void InitToken(string text)
+        {
+            _input = text;
+            _curLine = 0;
+            _curCharacter = 0;
+            _curInputPos = 0;
+            _lstToken.Clear();
+        }
+
         public void MakeResult(List<int> lstResult)
         {
             int iCurLine = 0;

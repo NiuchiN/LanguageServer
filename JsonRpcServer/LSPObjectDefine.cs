@@ -16,6 +16,18 @@ namespace JsonRpcServer
         public int version;
         public string text;
     }
+
+    public class VersionedTextDocumentIdentifier_LSP
+    {
+        public string uri;
+        public int version;
+    }
+
+    public class TextDocumentContentChangeEvent_LSP
+    {
+        public string text;
+    }
+
     public sealed class Position_LSP
     {
         public int line;
