@@ -44,7 +44,7 @@ namespace JsonRpcServer
 
             // Attachは、Streamの設定・ターゲットの追加・StartListeningまでを自動でやってくれる便利関数。細かい設定を入れたければ下記のようにする。
             var jsonRpc = new JsonRpc(stream);
-            jsonRpc.AddLocalRpcTarget(new Server(jsonRpc));
+            jsonRpc.AddLocalRpcTarget(new Server(jsonRpc, ".\\input\\Signature.txt"));
 
             // Trace設定
             var traceListener = new DefaultTraceListener();

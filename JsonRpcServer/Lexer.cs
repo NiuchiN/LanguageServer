@@ -314,7 +314,7 @@ namespace JsonRpcServer
             return retToken;
         }
 
-        private Token readOneToken()
+        private Token readOneToken(InstructionHashList instHashList)
         {
             char curChar;
             Token retToken = new Token();
@@ -359,6 +359,8 @@ namespace JsonRpcServer
 
                             if (isRegister(retToken.TokenString)) {
                                 retToken.TokenType = (int)SemTokensTypeIdx.Variable;
+                            } else if (instHashList.IsExistInstruction(retToken.TokenString)) {
+                                retToken.TokenType = (int)SemTokensTypeIdx.Instruction;
                             } else {
                                 retToken.TokenType = (int)SemTokensTypeIdx.Keyword;
                             }
@@ -373,11 +375,11 @@ namespace JsonRpcServer
             return retToken;
         }
 
-        public void Tokenize()
+        public void Tokenize(InstructionHashList instHashList)
         {
             Token token = new Token();
             while (true) {
-                token = readOneToken();
+                token = readOneToken(instHashList);
                 if (token.TokenType == (int)SemTokensTypeIdx.MaxNum) break;
                 _lstToken.Add(token);
                 //Console.Error.WriteLine($"Token:{(SemTokensTypeIdx)token.TokenType} Line:{token.Line} StartChar:{token.StartChar}, Length:{token.TokenString.Length}, string:{token.TokenString}");
@@ -530,6 +532,9 @@ namespace JsonRpcServer
 
         [StringVal("modifier")]
         Modifier = 23,
+
+        [StringVal("instruction")] // オリジナルのTokenType
+        Instruction = 24,
 
         MaxNum,
     }

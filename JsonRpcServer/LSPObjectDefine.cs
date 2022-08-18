@@ -16,7 +16,11 @@ namespace JsonRpcServer
         public int version;
         public string text;
     }
-
+    public sealed class Position_LSP
+    {
+        public int line;
+        public int character;
+    }
     public sealed class Range
     {
         public Range(int startLine, int startChar, int endLine, int endChar)
@@ -28,13 +32,8 @@ namespace JsonRpcServer
             this.end.character = endChar;
         }
         
-        public struct Position
-        {
-            public int line;
-            public int character;
-        }
-        public Position start;
-        public Position end;
+        public Position_LSP start;
+        public Position_LSP end;
 }
 
     public sealed class Diagnostic_LSP
@@ -322,6 +321,7 @@ namespace JsonRpcServer
     {
         public TextDocumentSyncOptions textDocumentSync;
         public SemanticTokensOptions semanticTokensProvider;
+        public bool hoverProvider;
     }
 
     public sealed class ServerCapabilities_LSP
@@ -343,6 +343,11 @@ namespace JsonRpcServer
     public sealed class SemanticTokens_LSP
     {
         public List<int> data;
+    }
+
+    public sealed class Hover_LSP
+    {
+        public string[] contents;
     }
 
     /* --- enum --- */

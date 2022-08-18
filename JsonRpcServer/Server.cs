@@ -10,6 +10,8 @@ namespace JsonRpcServer
     public class Server
     {
         private readonly JsonRpc _rpc;
+        private InstructionHint _instSignature;
+        private InstructionHashList _instHashList;
         private bool _bIsPubDiagnostics = false;
         private List<Diagnostic_LSP> _lstDiagnostics = new List<Diagnostic_LSP>();
         private Dictionary<string, int> _dicSemTokensTypes = new Dictionary<string, int>();
@@ -18,7 +20,7 @@ namespace JsonRpcServer
         private bool[] _bIsTokenTypes = new bool[(int)SemTokensTypeIdx.MaxNum];
         private bool[] _bIsTokenModifiers = new bool[(int)SemTokensModifyIdx.MaxNum];
 
-        public Server(JsonRpc rpc)
+        public Server(JsonRpc rpc, string signatureInputPath)
         {
             _rpc = rpc;
 
@@ -32,6 +34,10 @@ namespace JsonRpcServer
                 _dicSemTokensModifiers.Add(eModifyVal.GetStr(), (int)eModifyVal);
             }
 
+            // Hoverで表示するInstructionのSignatureを設定
+            _instHashList = new InstructionHashList();
+            _instSignature = new InstructionHint(signatureInputPath, _instHashList);
+            _instSignature.MakeSignatureData();
         }
 
         private void sendMessage(string strMethod, object objParams)
@@ -45,10 +51,9 @@ namespace JsonRpcServer
             sendMessage("window/logMessage", LogMessageParams);
         }
 
-        private void sendDiagnostics(string uri, List<Diagnostic_LSP>lstDiagnositcs)
+        private void sendDiagnostics(string uri, List<Diagnostic_LSP> lstDiagnositcs)
         {
-            if (_bIsPubDiagnostics)
-            {
+            if (_bIsPubDiagnostics) {
                 var DiagnosticJson = new PublishDiagnosticsParams_LSP
                 {
                     uri = uri,
@@ -60,10 +65,10 @@ namespace JsonRpcServer
 
         }
 
-        private void compile(string uri, string source)
+        private void makeNewToken(string uri, string source)
         {
             Lexer lex = new Lexer(uri, source);
-            lex.Tokenize();
+            lex.Tokenize(_instHashList);
             _dicLexer.Add(uri, lex);
         }
 
@@ -119,7 +124,8 @@ namespace JsonRpcServer
                         },
                         range = false,
                         full = true
-                    }
+                    },
+                    hoverProvider = _instSignature.IsSignatureDataEnable,
                 }
             };
             sendLogMessage(MessageType.Info, "Initialized!");
@@ -129,7 +135,7 @@ namespace JsonRpcServer
         [JsonRpcMethod("textDocument/didOpen")]
         public void TextDocDidOpen(TextDocumentItem_LSP textDocument)
         {
-            compile(textDocument.uri, textDocument.text);
+            makeNewToken(textDocument.uri, textDocument.text);
         }
 
         [JsonRpcMethod("textDocument/didChange")]
@@ -154,6 +160,28 @@ namespace JsonRpcServer
                 data = new List<int>()
             };
             _dicLexer[textDocument.uri].MakeResult(result.data);
+
+            return result;
+        }
+
+        [JsonRpcMethod("textDocument/hover")]
+        public object Hover(TextDocumentIdentifier_LSP textDocument, Position_LSP position)
+        {
+            string[] strContent = null;
+            Token token = _dicLexer[textDocument.uri].SearchToken(position.line, position.character);
+
+            if (token != null) {
+                if (_instHashList.IsExistInstruction(token.TokenString)) {
+                    strContent = new string[2] { null, null };
+                    strContent[0] = _instSignature.GetSignature(token.TokenString);
+                    strContent[1] = _instSignature.GetDescription(token.TokenString);
+                } 
+            }
+
+            var result = new Hover_LSP
+            {
+                contents = strContent
+            };
 
             return result;
         }
