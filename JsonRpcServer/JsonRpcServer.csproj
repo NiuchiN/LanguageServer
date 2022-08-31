@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstructionHint.cs" />
+    <Compile Include="LexKeyword.cs" />
     <Compile Include="LSPObjectDefine.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Program.cs" />

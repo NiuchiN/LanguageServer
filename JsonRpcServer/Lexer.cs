@@ -101,6 +101,9 @@ namespace JsonRpcServer
 
             while(bIsWhiteSpace) { 
                 curChar = readChar();
+
+                if (curChar == '\0') { return curChar; }
+
                 countUpReadPos();
                 bIsWhiteSpace = isWhiteSpace(curChar);
             } 
@@ -148,6 +151,7 @@ namespace JsonRpcServer
                     break;
                 }
             }
+
             return retStr;
         }
 
@@ -173,21 +177,31 @@ namespace JsonRpcServer
             return retToken;
         }
 
+        private bool isOtherKeyword(Token token)
+        {
+            foreach (OtherKeywordType key in Enum.GetValues(typeof(OtherKeywordType))) {
+                if (token.TokenString == key.GetStr()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private Token readStartKeyword(char beginChar)
         {
             Token retToken = new Token();
             setCommonTokenInfo(retToken);
 
             string strVal = readIdentifier(beginChar);
-            switch (strVal) {
-                case ".begin":
-                case ".end":
+            foreach (PeriodKeywordType key in Enum.GetValues(typeof(PeriodKeywordType))) {
+                if (key == PeriodKeywordType.Banpei) {
+                    return null;
+                }
+                if (strVal == key.GetStr()) {
                     retToken.TokenType = (int)SemTokensTypeIdx.Keyword;
                     retToken.TokenString = strVal;
                     break;
-                default:
-                    retToken = null;
-                    break;
+                }
             }
 
             return retToken;
@@ -233,13 +247,15 @@ namespace JsonRpcServer
 
                 if (_lstToken.Count > 0) {
                     prevToken = _lstToken[_lstToken.Count - 1];
-                    if (prevToken.TokenString == "block") {
+                    if (prevToken.TokenString == PeriodKeywordType.BeginBlock.GetStr() || prevToken.TokenString == PeriodKeywordType.BeginTemplate.GetStr() ) {
                         retToken.TokenType = (int)SemTokensTypeIdx.Method;
-                    }
-                    else if (prevToken.TokenString == "macro") {
+                    } else if (prevToken.TokenString == OtherKeywordType.Macro.GetStr() || prevToken.TokenString == PeriodKeywordType.CallMacro.GetStr()) {
                         retToken.TokenType = (int)SemTokensTypeIdx.Macro;
-                    }
-                    else {
+                    } else if (prevToken.TokenString == PeriodKeywordType.BeginFunction.GetStr()) {
+                        retToken.TokenType = (int)SemTokensTypeIdx.Function;
+                    } else if (prevToken.TokenString == PeriodKeywordType.Define.GetStr()) {
+                        retToken.TokenType = (int)SemTokensTypeIdx.Parameter;
+                    } else {
                         retToken.TokenType = (int)SemTokensTypeIdx.String;
                     }
                 } else {
@@ -256,7 +272,7 @@ namespace JsonRpcServer
         private Token readNumberLiteral()
         {
             Token retToken = new Token();
-            bool bIsNumLiteral = false;
+            bool bIsLiteral = false;
             bool bIsContinue = true;
             string strValToken = "#";
             setCommonTokenInfo(retToken);
@@ -283,18 +299,19 @@ namespace JsonRpcServer
                         break;
                     default:
                         if (isNumber(curChar)) {
-                            bIsNumLiteral = true;
+                            bIsLiteral = true;
                             strValToken += curChar;
                         } else if (isWhiteSpace(curChar)) {
                             bIsContinue = false;
                         } else {
-                            bIsNumLiteral = false;
+                            bIsLiteral = true;
+                            strValToken += curChar;
                         }
                         break;
                 }
             }
 
-            if (bIsNumLiteral) {
+            if (bIsLiteral) {
                 retToken.TokenString = strValToken;
                 retToken.TokenType = (int)SemTokensTypeIdx.Number;
             } else {
@@ -303,22 +320,12 @@ namespace JsonRpcServer
                 return retToken;
         }
 
-
-        private Token readEOF()
-        {
-            Token retToken = new Token();
-            setCommonTokenInfo(retToken);
-            retToken.TokenType = (int)SemTokensTypeIdx.MaxNum;
-            retToken.TokenString = "\0";
-
-            return retToken;
-        }
-
-        private Token readOneToken(InstructionHashList instHashList)
+        private Token readOneToken(InstructionHashList instHashList, out bool bIsEOF)
         {
             char curChar;
             Token retToken = new Token();
             bool bIsContinue = true;
+            bIsEOF = false;
 
             while (bIsContinue) {
                 curChar = skipWhiteSpace();
@@ -332,9 +339,7 @@ namespace JsonRpcServer
                         break;
                     case '.':
                         retToken = readStartKeyword('.');
-                        if (retToken != null) {                        
-                            bIsContinue = false;
-                        }
+                        bIsContinue = false;
                         break;
                     case '\'':
                         retToken = readStringLiteral();
@@ -349,29 +354,31 @@ namespace JsonRpcServer
                         }
                         break;
                     case '\0':
-                        retToken = readEOF();
+                        retToken = null;
+                        bIsEOF = true;
                         bIsContinue = false;
                         break;
                     default:
-                        if (isIdentifier(curChar)) {
-                            setCommonTokenInfo(retToken);
-                            retToken.TokenString = readIdentifier(curChar);
+                         if (isIdentifier(curChar)) {
+                             setCommonTokenInfo(retToken);
+                             retToken.TokenString = readIdentifier(curChar);
 
-                            if (isRegister(retToken.TokenString)) {
-                                retToken.TokenType = (int)SemTokensTypeIdx.Variable;
-                            } else if (instHashList.IsExistInstruction(retToken.TokenString)) {
-                                retToken.TokenType = (int)SemTokensTypeIdx.Instruction;
-                            } else {
-                                retToken.TokenType = (int)SemTokensTypeIdx.Keyword;
-                            }
-                            bIsContinue = false;
-                        } else {
-                            // pass;
-                        }
+                             if (isRegister(retToken.TokenString)) {
+                                 retToken.TokenType = (int)SemTokensTypeIdx.Variable;
+                             } else if (instHashList.IsExistInstruction(retToken.TokenString)) {
+                                 retToken.TokenType = (int)SemTokensTypeIdx.Instruction;
+                             } else if (isOtherKeyword(retToken)) {
+                                 retToken.TokenType = (int)SemTokensTypeIdx.Keyword;
+                             } else {
+                                 retToken = null;
+                             }
+                             bIsContinue = false;
+                         } else {
+                             // pass;
+                         }
                         break;
                 }
             }
-
             return retToken;
         }
 
@@ -379,9 +386,13 @@ namespace JsonRpcServer
         {
             Token token = new Token();
             while (true) {
-                token = readOneToken(instHashList);
-                if (token.TokenType == (int)SemTokensTypeIdx.MaxNum) break;
-                _lstToken.Add(token);
+                bool bIsEOF;
+                token = readOneToken(instHashList, out bIsEOF);
+                if (bIsEOF) break;
+
+                if (token != null) {
+                    _lstToken.Add(token);
+                }
                 //Console.Error.WriteLine($"Token:{(SemTokensTypeIdx)token.TokenType} Line:{token.Line} StartChar:{token.StartChar}, Length:{token.TokenString.Length}, string:{token.TokenString}");
             }
         }
@@ -581,7 +592,6 @@ namespace JsonRpcServer
         DefaultLibrary = 9,
 
         MaxNum,
-
     }
 
 
