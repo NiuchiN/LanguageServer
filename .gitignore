@@ -5,3 +5,4 @@ JsonRpcServer/.vs/*
 .vs/*
 /JsonRpcServer/input/*.txt
 
+/ClientForVS2022/obj

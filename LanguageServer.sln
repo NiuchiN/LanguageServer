@@ -1,20 +1,36 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29209.62
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonRpcServer", "JsonRpcServer\JsonRpcServer.csproj", "{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientForVS2022", "ClientForVS2022\ClientForVS2022.csproj", "{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Debug|x86.Build.0 = Debug|Any CPU
 		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|x86.ActiveCfg = Release|Any CPU
+		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|x86.Build.0 = Release|Any CPU
+		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Debug|x86.ActiveCfg = Debug|x86
+		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Debug|x86.Build.0 = Debug|x86
+		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Release|x86.ActiveCfg = Release|x86
+		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
