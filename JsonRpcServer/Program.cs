@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Nerdbank.Streams;
 using StreamJsonRpc;
 using System.Diagnostics;
+using System.Configuration;
+using System.Reflection;
 
 namespace JsonRpcServer
 {
@@ -47,14 +49,26 @@ namespace JsonRpcServer
             jsonRpc.AddLocalRpcTarget(new Server(jsonRpc, ".\\input\\Signature.txt"));
 
             // Trace設定
-            var traceListener = new DefaultTraceListener();
-            DateTime dt = DateTime.Now;
-            string logFileName = dt.ToString($"{dt:yyyymmddhhmmss}") + ".log";
-
-            traceListener.LogFileName = Path.Combine("C:\\Logs", logFileName);
-            jsonRpc.TraceSource.Switch.Level = SourceLevels.All;
-            jsonRpc.TraceSource.Listeners.Add(traceListener);   
-            //jsonRpc.TraceSource.TraceData(TraceEventType.Information, 0, "Log Start");
+            // AppConfigにてLogの有効化・パスの設定を行う。
+            var isTrace = ConfigurationManager.AppSettings["TraceOn"];
+                
+            if (isTrace == "True") {
+                var traceListener = new DefaultTraceListener();
+                DateTime dt = DateTime.Now;
+                string logFileName = dt.ToString($"{dt:yyyymmddhhmmss}") + ".log";
+                var logDir = ConfigurationManager.AppSettings["LogDir"];
+                if (logDir != null & Directory.Exists(logDir)) {
+                    traceListener.LogFileName = Path.Combine(logDir, logFileName);
+                } else {
+                    // Directory指定が無ければExeの場所に作成する。
+                    string defaultLogDir = Directory.GetParent(Assembly.GetEntryAssembly().Location).ToString();
+                    defaultLogDir = Path.Combine(defaultLogDir, "Logs");
+                    Directory.CreateDirectory(defaultLogDir);
+                    traceListener.LogFileName = Path.Combine(defaultLogDir, logFileName);
+                }
+                jsonRpc.TraceSource.Switch.Level = SourceLevels.All;
+                jsonRpc.TraceSource.Listeners.Add(traceListener);
+            }
 
             // Listening開始
             jsonRpc.StartListening();
