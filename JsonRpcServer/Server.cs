@@ -72,8 +72,7 @@ namespace JsonRpcServer
             _dicLexer.Add(uri, lex);
         }
 
-        [JsonRpcMethod("initialize")]
-        public object initialize(int processId, object clientInfo, string locale, string rootPath, string rootUri, ClientCapabilities_LSP capabilities, object trace, object workspaceFolders)
+        private object commonInitialize(ClientCapabilities_LSP capabilities)
         {
             // ClientがPublishDiagnosticsに対応しているか
             if (capabilities.textDocument.publishDiagnostics != null) {
@@ -131,6 +130,19 @@ namespace JsonRpcServer
             sendLogMessage(MessageType.Info, "Initialized!");
             return initResult;
         }
+
+        public object initialize(int processId, string rootUri, ClientCapabilities_LSP capabilities)
+        {
+            return commonInitialize(capabilities);
+        }
+
+
+        public object initialize(int processId, object clientInfo, string locale, string rootPath, string rootUri, ClientCapabilities_LSP capabilities, object trace, object workspaceFolders)
+        {
+            return commonInitialize(capabilities);
+        }
+
+
 
         [JsonRpcMethod("textDocument/didOpen")]
         public void TextDocDidOpen(TextDocumentItem_LSP textDocument)
