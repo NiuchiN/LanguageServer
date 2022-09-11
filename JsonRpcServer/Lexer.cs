@@ -45,16 +45,15 @@ namespace JsonRpcServer
         private int _curCharacter;
         private int _curInputPos;
         private List<Token> _lstToken = new List<Token>();
+        
+        public List<int> ListResult = new List<int>();
 
         public Lexer(string uri, string input)
         {
             _uri = uri;
-            _input = input;
-            _curLine = 0;
-            _curCharacter = 0;
-            _curInputPos = 0;
+            InitToken(input);
         }
-        
+
         private void setCommonTokenInfo(Token token)
         {
             token.Line = _curLine;
@@ -385,16 +384,18 @@ namespace JsonRpcServer
 
         public void Tokenize(InstructionHashList instHashList)
         {
-            Token token = new Token();
-            while (true) {
-                bool bIsEOF;
-                token = readOneToken(instHashList, out bIsEOF);
-                if (bIsEOF) break;
+            if (_lstToken.Count() == 0) {
+                Token token = new Token();
+                while (true) {
+                    bool bIsEOF;
+                    token = readOneToken(instHashList, out bIsEOF);
+                    if (bIsEOF) break;
 
-                if (token != null) {
-                    _lstToken.Add(token);
+                    if (token != null) {
+                        _lstToken.Add(token);
+                    }
+                    //Console.Error.WriteLine($"Token:{(SemTokensTypeIdx)token.TokenType} Line:{token.Line} StartChar:{token.StartChar}, Length:{token.TokenString.Length}, string:{token.TokenString}");
                 }
-                //Console.Error.WriteLine($"Token:{(SemTokensTypeIdx)token.TokenType} Line:{token.Line} StartChar:{token.StartChar}, Length:{token.TokenString.Length}, string:{token.TokenString}");
             }
         }
 
@@ -404,41 +405,50 @@ namespace JsonRpcServer
             _curLine = 0;
             _curCharacter = 0;
             _curInputPos = 0;
+            ListResult.Clear();
             _lstToken.Clear();
         }
 
-        public void MakeResult(List<int> lstResult)
+        public void MakeResult()
         {
             int iCurLine = 0;
             int iCurCharcter = 0;
 
-            foreach (Token token in _lstToken) {
-                int[] aiResultOne = new int[5];
-                int iDeltaLine, iDeltaStart, iLength, iTokenType, iTokenModifiers;
-                if (token.Line == iCurLine) {
-                    iDeltaLine = 0;
-                    iDeltaStart = token.StartChar - iCurCharcter;
+            if (ListResult.Count() == 0 ) {
+                // 前回の結果が存在しない場合は新しく作成する。前回値がある場合はそのまま返却する。
+                foreach (Token token in _lstToken) {
+                    int[] aiResultOne = new int[5];
+                    int iDeltaLine, iDeltaStart, iLength, iTokenType, iTokenModifiers;
+                    if (token.Line == iCurLine) {
+                        iDeltaLine = 0;
+                        iDeltaStart = token.StartChar - iCurCharcter;
 
-                } else {
-                    iDeltaLine = token.Line - iCurLine;
-                    iDeltaStart = token.StartChar;
-                }
+                    } else {
+                        iDeltaLine = token.Line - iCurLine;
+                        iDeltaStart = token.StartChar;
+                    }
 
-                iCurLine = token.Line;
-                iCurCharcter = token.StartChar;
-                iLength = token.TokenString.Length;
-                iTokenType = token.TokenType;
-                iTokenModifiers = token.TokenModifiers;
+                    iCurLine = token.Line;
+                    iCurCharcter = token.StartChar;
+                    iLength = token.TokenString.Length;
+                    iTokenType = token.TokenType;
+                    iTokenModifiers = token.TokenModifiers;
 
-                aiResultOne[0] = iDeltaLine;
-                aiResultOne[1] = iDeltaStart;
-                aiResultOne[2] = iLength;
-                aiResultOne[3] = iTokenType;
-                aiResultOne[4] = iTokenModifiers;
-                foreach (int res in aiResultOne) {
-                    lstResult.Add(res);
+                    aiResultOne[0] = iDeltaLine;
+                    aiResultOne[1] = iDeltaStart;
+                    aiResultOne[2] = iLength;
+                    aiResultOne[3] = iTokenType;
+                    aiResultOne[4] = iTokenModifiers;
+                    foreach (int res in aiResultOne) {
+                        ListResult.Add(res);
+                    }
                 }
             }
+        }
+
+        public void GetResultList(ref List<int> lstResult)
+        {
+            lstResult = ListResult;
         }
 
         public Token SearchToken(int line, int startChar)

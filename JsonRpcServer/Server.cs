@@ -176,8 +176,8 @@ namespace JsonRpcServer
             {
                 data = new List<int>()
             };
-            _dicLexer[textDocument.uri].MakeResult(result.data);
-
+            _dicLexer[textDocument.uri].MakeResult();
+            _dicLexer[textDocument.uri].GetResultList(ref result.data);
             return result;
         }
 
