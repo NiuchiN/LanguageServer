@@ -55,7 +55,7 @@ namespace JsonRpcServer
             if (isTrace == "True") {
                 var traceListener = new DefaultTraceListener();
                 DateTime dt = DateTime.Now;
-                string logFileName = dt.ToString($"{dt:yyyymmddhhmmss}") + ".log";
+                string logFileName = dt.ToString("yyyyMMddhhmmss") + ".log";
                 var logDir = ConfigurationManager.AppSettings["LogDir"];
                 if (logDir != null & Directory.Exists(logDir)) {
                     traceListener.LogFileName = Path.Combine(logDir, logFileName);
