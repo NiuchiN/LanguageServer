@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,7 +37,7 @@ namespace JsonRpcServer
         }
     }
 
-    public class Lexer
+    public class Lexer : IDisposable
     {
         private string _input;
         private string _uri;
@@ -455,6 +456,16 @@ namespace JsonRpcServer
                 return _lstToken[index - 1];
             }
         }
+        public void Dispose()
+        {
+            _uri = null;
+            _input = null;
+            _curLine = 0;
+            _curCharacter = 0;
+            _curInputPos = 0;
+            _lstToken.Clear();
+        }
+
     }
 
     public class StringValAttribute : Attribute

@@ -160,6 +160,10 @@ namespace JsonRpcServer
         [JsonRpcMethod("textDocument/didClose")]
         public void TextDocDidClose(TextDocumentItem_LSP textDocument)
         {
+            // 後始末
+            _dicLexer[textDocument.uri].Dispose();
+            _dicLexer.Remove(textDocument.uri);
+
             _lstDiagnostics.Clear();
             sendDiagnostics(textDocument.uri, _lstDiagnostics);
 
