@@ -13,6 +13,7 @@ namespace JsonRpcServer
 
     class Program
     {
+        private const string _LSPServerVer = "0.0.0.1";
         static async Task<int> Main(string[] args)
         {
             if (args.Length > 0 && args[0] == "stdio")
@@ -46,7 +47,7 @@ namespace JsonRpcServer
 
             // Attachは、Streamの設定・ターゲットの追加・StartListeningまでを自動でやってくれる便利関数。細かい設定を入れたければ下記のようにする。
             var jsonRpc = new JsonRpc(stream);
-            jsonRpc.AddLocalRpcTarget(new Server(jsonRpc, ".\\input\\Signature.txt"));
+            jsonRpc.AddLocalRpcTarget(new Server(jsonRpc, ".\\input\\Signature.txt", _LSPServerVer));
 
             // Trace設定
             // AppConfigにてLogの有効化・パスの設定を行う。

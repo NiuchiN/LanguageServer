@@ -13,6 +13,7 @@ namespace JsonRpcServer
         private InstructionHint _instSignature;
         private InstructionHashList _instHashList;
         private bool _bIsPubDiagnostics = false;
+        private string _LSPServerVer;
         private List<Diagnostic_LSP> _lstDiagnostics = new List<Diagnostic_LSP>();
         private Dictionary<string, int> _dicSemTokensTypes = new Dictionary<string, int>();
         private Dictionary<string, int> _dicSemTokensModifiers = new Dictionary<string, int>();
@@ -20,9 +21,10 @@ namespace JsonRpcServer
         private bool[] _bIsTokenTypes = new bool[(int)SemTokensTypeIdx.MaxNum];
         private bool[] _bIsTokenModifiers = new bool[(int)SemTokensModifyIdx.MaxNum];
 
-        public Server(JsonRpc rpc, string signatureInputPath)
+        public Server(JsonRpc rpc, string signatureInputPath, string lSPServerVer)
         {
             _rpc = rpc;
+            _LSPServerVer = lSPServerVer;
 
             // SemanticToken用のディクショナリを初期化
             foreach (SemTokensTypeIdx eTypesVal in Enum.GetValues(typeof(SemTokensTypeIdx))) {
@@ -127,7 +129,7 @@ namespace JsonRpcServer
                     hoverProvider = _instSignature.IsSignatureDataEnable,
                 }
             };
-            sendLogMessage(MessageType.Info, "Initialized!");
+            sendLogMessage(MessageType.Info, $"Initialized Server ver:{_LSPServerVer}");
             return initResult;
         }
 
