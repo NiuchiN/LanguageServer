@@ -7,3 +7,5 @@ JsonRpcServer/.vs/*
 
 /ClientForVS2022/obj
 /ClientForVS2022/bin/*
+/Shared/obj
+/Shared/bin/*

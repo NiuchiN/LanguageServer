@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Shared;
 
 namespace JsonRpcServer
 {
@@ -475,145 +476,9 @@ namespace JsonRpcServer
             _curInputPos = 0;
             _lstToken.Clear();
         }
-
     }
 
-    public class StringValAttribute : Attribute
-    {
-        public string StringVal { get; protected set; }
-        public StringValAttribute(string strVal) { this.StringVal = strVal; }
-    }
 
-    public static class CommonAttr
-    {
-        public static string GetStr(this  Enum eVal)
-        {
-            Type type = eVal.GetType();
-            System.Reflection.FieldInfo fieldInfo = type.GetField(eVal.ToString());
-
-            if (fieldInfo == null ) {
-                return null;
-            }
-
-            StringValAttribute[] attr = fieldInfo.GetCustomAttributes(typeof(StringValAttribute), false) as StringValAttribute[];
-            return attr.Length > 0 ? attr[0].StringVal : null;
-        }
-    }
-
-    public enum SemTokensTypeIdx
-    {
-        [StringVal("namespace")]
-        NameSpace = 0,
-
-        [StringVal("class")]
-        Class = 1,
-
-        [StringVal("enum")]
-        Enum = 2,
-
-        [StringVal("interface")]
-        Interface = 3,
-
-        [StringVal("struct")]
-        Struct = 4,
-
-        [StringVal("typeParameter")]
-        TypeParameter = 5,
-
-        [StringVal("type")]
-        Type = 6,
-
-        [StringVal("parameter")]
-        Parameter = 7,
-
-        [StringVal("variable")]
-        Variable = 8,
-
-        [StringVal("property")]
-        Property = 9,
-
-        [StringVal("enumMember")]
-        EnumMember = 10,
-
-        [StringVal("decorator")]
-        Decorator = 11,
-
-        [StringVal("event")]
-        Event = 12,
-
-        [StringVal("function")]
-        Function = 13,
-
-        [StringVal("method")]
-        Method = 14,
-
-        [StringVal("macro")]
-        Macro = 15,
-
-        [StringVal("label")]
-        Lable = 16,
-
-        [StringVal("comment")]
-        Comment = 17,
-
-        [StringVal("string")]
-        String = 18,
-
-        [StringVal("keyword")]
-        Keyword = 19,
-
-        [StringVal("number")]
-        Number = 20,
-
-        [StringVal("regexp")]
-        Regexp = 21,
-
-        [StringVal("operator")]
-        Operator = 22,
-
-        [StringVal("modifier")]
-        Modifier = 23,
-
-        [StringVal("instruction")] // オリジナルのTokenType
-        Instruction = 24,
-
-        MaxNum,
-    }
-
-    public enum SemTokensModifyIdx
-    {
-        [StringVal("declaration")]
-        Declaration = 0,
-
-        [StringVal("definition")]
-        Definition = 1,
-
-        [StringVal("readonly")]
-        Readonly = 2,
-
-        [StringVal("static")]
-        Static = 3,
-
-        [StringVal("deprecated")]
-        Deprecated = 4,
-
-        [StringVal("abstract")]
-        Abstract = 5,
-
-        [StringVal("async")]
-        Async = 6,
-
-        [StringVal("modification")]
-        Modification = 7,
-
-        [StringVal("documentation")]
-        Documentation = 8,
-
-        [StringVal("defaultLibrary")]
-        DefaultLibrary = 9,
-
-        MaxNum,
-    }
 
 
 }

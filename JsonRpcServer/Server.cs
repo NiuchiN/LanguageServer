@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using StreamJsonRpc;
+using Shared;
 
 namespace JsonRpcServer
 {

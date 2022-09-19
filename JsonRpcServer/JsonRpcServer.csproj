@@ -54,8 +54,16 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\EnumSetting.cs">
+      <Link>SharedLink\EnumSetting.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\Keyword.cs">
+      <Link>SharedLink\Keyword.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\SemanticTokensDef.cs">
+      <Link>SharedLink\SemanticTokensDef.cs</Link>
+    </Compile>
     <Compile Include="InstructionHint.cs" />
-    <Compile Include="LexKeyword.cs" />
     <Compile Include="LSPObjectDefine.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Program.cs" />
