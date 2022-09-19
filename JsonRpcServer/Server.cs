@@ -134,12 +134,13 @@ namespace JsonRpcServer
             return initResult;
         }
 
+        // LSP Client for Visual Studio 2022用のInitialize
         public object initialize(int processId, string rootUri, ClientCapabilities_LSP capabilities)
         {
             return commonInitialize(capabilities);
         }
 
-
+        // LSP Client for VS Code用のInitialize
         public object initialize(int processId, object clientInfo, string locale, string rootPath, string rootUri, ClientCapabilities_LSP capabilities, object trace, object workspaceFolders)
         {
             return commonInitialize(capabilities);

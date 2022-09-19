@@ -68,6 +68,7 @@
     <Compile Include="Lexer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ServerVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MessagePack, Version=2.3.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
