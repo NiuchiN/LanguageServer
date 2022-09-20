@@ -139,6 +139,10 @@ namespace JsonRpcServer
         {
             return commonInitialize(capabilities);
         }
+        public object initialize(int processId, string rootPath, string rootUri, ClientCapabilities_LSP capabilities)
+        {
+            return commonInitialize(capabilities);
+        }
 
         // LSP Client for VS Code用のInitialize
         public object initialize(int processId, object clientInfo, string locale, string rootPath, string rootUri, ClientCapabilities_LSP capabilities, object trace, object workspaceFolders)
