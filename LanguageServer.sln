@@ -5,9 +5,9 @@ VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonRpcServer", "JsonRpcServer\JsonRpcServer.csproj", "{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientForVS2022", "ClientForVS2022\ClientForVS2022.csproj", "{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{24684B2E-E5D8-42B9-8FEB-0B829EFAF7FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{24684B2E-E5D8-42B9-8FEB-0B829EFAF7FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LspClientForVS2022", "LspClientForVS2022\LspClientForVS2022.csproj", "{90A54354-4223-4B93-9941-5B9452B44FCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,6 @@ Global
 		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|x86.ActiveCfg = Release|Any CPU
 		{78FC0D63-B42D-49F1-9FD0-EDF44F0925ED}.Release|x86.Build.0 = Release|Any CPU
-		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Debug|x86.ActiveCfg = Debug|x86
-		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Debug|x86.Build.0 = Debug|x86
-		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Release|x86.ActiveCfg = Release|x86
-		{024A4F0C-FAB0-491F-9180-0C69EA7AEAF0}.Release|x86.Build.0 = Release|x86
 		{24684B2E-E5D8-42B9-8FEB-0B829EFAF7FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24684B2E-E5D8-42B9-8FEB-0B829EFAF7FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24684B2E-E5D8-42B9-8FEB-0B829EFAF7FC}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -41,6 +33,14 @@ Global
 		{24684B2E-E5D8-42B9-8FEB-0B829EFAF7FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24684B2E-E5D8-42B9-8FEB-0B829EFAF7FC}.Release|x86.ActiveCfg = Release|Any CPU
 		{24684B2E-E5D8-42B9-8FEB-0B829EFAF7FC}.Release|x86.Build.0 = Release|Any CPU
+		{90A54354-4223-4B93-9941-5B9452B44FCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90A54354-4223-4B93-9941-5B9452B44FCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90A54354-4223-4B93-9941-5B9452B44FCB}.Debug|x86.ActiveCfg = Debug|x86
+		{90A54354-4223-4B93-9941-5B9452B44FCB}.Debug|x86.Build.0 = Debug|x86
+		{90A54354-4223-4B93-9941-5B9452B44FCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90A54354-4223-4B93-9941-5B9452B44FCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90A54354-4223-4B93-9941-5B9452B44FCB}.Release|x86.ActiveCfg = Release|x86
+		{90A54354-4223-4B93-9941-5B9452B44FCB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

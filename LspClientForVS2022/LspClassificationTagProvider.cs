@@ -11,7 +11,7 @@ using System.Windows.Documents;
 using Shared;
 using System.Diagnostics;
 
-namespace ClientForVS2022
+namespace LspClientForVS2022
 {
     [Export(typeof(IViewTaggerProvider))]
     [ContentType("ore")]

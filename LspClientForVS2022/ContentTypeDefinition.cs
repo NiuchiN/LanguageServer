@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Package;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-namespace ClientForVS2022
+namespace LspClientForVS2022
 {
     public class MyContentDefinition
     {

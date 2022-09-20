@@ -5,7 +5,7 @@ JsonRpcServer/.vs/*
 .vs/*
 /JsonRpcServer/input/*.txt
 
-/ClientForVS2022/obj
-/ClientForVS2022/bin/*
+/LspClientForVS2022/obj
+/LspClientForVS2022/bin/*
 /Shared/obj
 /Shared/bin/*

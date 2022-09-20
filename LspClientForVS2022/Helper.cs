@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClientForVS2022
+namespace LspClientForVS2022
 {
     public static class Helper
     {

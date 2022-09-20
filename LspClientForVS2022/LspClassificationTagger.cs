@@ -10,7 +10,7 @@ using Shared;
 using System.Windows.Documents;
 using System.Diagnostics;
 
-namespace ClientForVS2022
+namespace LspClientForVS2022
 {
     public class SemTokenDecodeData
     {

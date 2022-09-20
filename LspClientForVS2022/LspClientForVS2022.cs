@@ -20,7 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
-namespace ClientForVS2022
+namespace LspClientForVS2022
 {
     public class SemanticTokensData
     {

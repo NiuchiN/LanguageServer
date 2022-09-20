@@ -4,7 +4,7 @@ using Shared;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
 
-namespace ClientForVS2022
+namespace LspClientForVS2022
 {
     public static class TypeExports
     {
